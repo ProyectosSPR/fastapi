@@ -1,0 +1,36 @@
+services:
+  db:
+    image: postgres:latest
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydatabase
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - my_network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      BIND_ADDR: 0.0.0.0 # Esto asegura que pgAdmin se pueda acceder desde cualquier IP
+    ports:
+      - "8089:80" # Mapea el puerto 8089 de tu droplet al puerto 80 de pgAdmin
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - db
+    networks:
+      - my_network
+
+volumes:
+  postgres_data:
+  pgadmin_data:
+
+networks:
+  my_network:
+    driver: bridge
